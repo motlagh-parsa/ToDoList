@@ -1,6 +1,6 @@
-import { TasksProvider } from "./context/TaskContext";
+import {TasksProvider} from "./context/TaskContext";
 import Home from './pages/Home';
-import { CssBaseline, Container } from '@mui/material';
+import {CssBaseline, Container} from '@mui/material';
 
 /**
  * App Component - The root component of the application.
@@ -12,12 +12,12 @@ function App() {
         <TasksProvider>
 
             {/* Normalize default CSS and apply MUI's baseline styling */}
-            <CssBaseline />
+            <CssBaseline/>
 
             {/* Container provides horizontal padding and centers content */}
-            <Container maxWidth="md" sx={{ paddingTop: 4 }}>
+            <Container maxWidth="md" sx={{paddingTop: 4}}>
                 {/* Main page component where tasks are managed */}
-                <Home />
+                <Home/>
             </Container>
 
         </TasksProvider>

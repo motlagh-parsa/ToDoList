@@ -1,7 +1,7 @@
 import React from "react";
-import { List, Typography } from "@mui/material";
+import {List, Typography} from "@mui/material";
 import TaskItem from "./TaskItem";
-import { Task } from "../types/task";
+import {Task} from "../types/task";
 
 // Props definition for TaskList component
 type TaskListProps = {
@@ -14,7 +14,7 @@ type TaskListProps = {
  * If a category is selected, it filters tasks based on that category.
  * Otherwise, all tasks are shown grouped by their category.
  */
-const TaskList: React.FC<TaskListProps> = ({ tasks, selectedCategory }) => {
+const TaskList: React.FC<TaskListProps> = ({tasks, selectedCategory}) => {
     // Determine if we're showing tasks from all categories or just the selected one
     const isAll = !selectedCategory || selectedCategory === "All";
 
@@ -38,7 +38,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, selectedCategory }) => {
                         <List>
                             {/* Render each task within the current category */}
                             {categoryTasks.map((task) => (
-                                <TaskItem key={task.id} task={task} />
+                                <TaskItem key={task.id} task={task}/>
                             ))}
                         </List>
                     </div>

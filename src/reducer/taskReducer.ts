@@ -1,4 +1,4 @@
-import { Task } from "../types/task";
+import {Task} from "../types/task";
 
 // Define the shape of actions that the reducer will handle.
 type Action =
@@ -29,7 +29,7 @@ export const taskReducer = (state: Task[], action: Action): Task[] => {
         case "TOGGLE_COMPLETE":
             // Map over all tasks, and for the task that matches the ID (action.payload), toggle the 'completed' flag
             return state.map(task =>
-                task.id === action.payload ? { ...task, completed: !task.completed } : task
+                task.id === action.payload ? {...task, completed: !task.completed} : task
             );
 
         // EDIT_TASK: Replace an existing task with the updated version

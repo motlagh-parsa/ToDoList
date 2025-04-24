@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
     Checkbox,
     IconButton,
@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Task } from "../types/task";
+import {Task} from "../types/task";
 import TaskModal from "./TaskModal";
 import useTasks from "../hooks/useTasks";
 
@@ -20,18 +20,18 @@ type TaskItemProps = {
  * TaskItem - Renders a single to-do task item.
  * Includes actions to toggle completion, edit, and delete the task.
  */
-const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
-    const { dispatch } = useTasks(); // Access global dispatch from context
+const TaskItem: React.FC<TaskItemProps> = ({task}) => {
+    const {dispatch} = useTasks(); // Access global dispatch from context
     const [openModal, setOpenModal] = useState(false); // Local state for edit modal visibility
 
     // Toggle the task's completed state
     const toggleComplete = () => {
-        dispatch({ type: "TOGGLE_COMPLETE", payload: task.id });
+        dispatch({type: "TOGGLE_COMPLETE", payload: task.id});
     };
 
     // Remove the task from the list
     const deleteTask = () => {
-        dispatch({ type: "DELETE_TASK", payload: task.id });
+        dispatch({type: "DELETE_TASK", payload: task.id});
     };
 
     // Show the task editing modal
@@ -48,18 +48,18 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                     <>
                         {/* Edit button: opens TaskModal in edit mode */}
                         <IconButton edge="end" onClick={openEdit}>
-                            <EditIcon />
+                            <EditIcon/>
                         </IconButton>
 
                         {/* Delete button: removes task */}
                         <IconButton edge="end" onClick={deleteTask}>
-                            <DeleteIcon />
+                            <DeleteIcon/>
                         </IconButton>
                     </>
                 }
             >
                 {/* Checkbox to toggle task completion */}
-                <Checkbox checked={task.completed} onChange={toggleComplete} />
+                <Checkbox checked={task.completed} onChange={toggleComplete}/>
 
                 {/* Displays task title and category */}
                 <ListItemText

@@ -1,6 +1,6 @@
-import React, { createContext, useEffect, useReducer } from "react";
-import { taskReducer } from "../reducer/taskReducer";
-import { Task } from "../types/task";
+import React, {createContext, useEffect, useReducer} from "react";
+import {taskReducer} from "../reducer/taskReducer";
+import {Task} from "../types/task";
 
 // Define the shape of the context's value
 type TaskContextType = {
@@ -16,7 +16,7 @@ export const TasksContext = createContext<TaskContextType | undefined>(undefined
  *
  * Loads tasks from localStorage on init and persists them on update.
  */
-const TasksProvider = ({ children }: { children: React.ReactNode }) => {
+const TasksProvider = ({children}: { children: React.ReactNode }) => {
     const [tasks, dispatch] = useReducer(taskReducer, [], () => {
         // Load tasks from localStorage (if available) during initial render
         const storedTasks = localStorage.getItem("tasks");
@@ -30,10 +30,10 @@ const TasksProvider = ({ children }: { children: React.ReactNode }) => {
 
     return (
         // Provide task state and dispatch to child components
-        <TasksContext.Provider value={{ tasks, dispatch }}>
+        <TasksContext.Provider value={{tasks, dispatch}}>
             {children}
         </TasksContext.Provider>
     );
 };
 
-export { TasksProvider };
+export {TasksProvider};

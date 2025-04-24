@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Button, Container, Typography, Box, Chip } from "@mui/material";
+import React, {useState} from "react";
+import {Button, Container, Typography, Box, Chip} from "@mui/material";
 import TaskList from "../components/TaskList";
-import { TaskCategory } from "../types/categories";
+import {TaskCategory} from "../types/categories";
 import TaskModal from "../components/TaskModal";
 import useTasks from "../hooks/useTasks";
 
@@ -11,7 +11,7 @@ import useTasks from "../hooks/useTasks";
  */
 const Home = () => {
     // Access the list of tasks from the context using a custom hook
-    const { tasks } = useTasks();
+    const {tasks} = useTasks();
 
     // Modal state for showing/hiding the add/edit task modal
     const [openModal, setOpenModal] = useState(false);
@@ -43,13 +43,13 @@ const Home = () => {
                         clickable
                         color={categoryFilter === category ? "primary" : "default"}
                         onClick={() => setCategoryFilter(category)}
-                        sx={{ margin: 1 }}
+                        sx={{margin: 1}}
                     />
                 ))}
             </Box>
 
             {/* Display the filtered list of tasks */}
-            <TaskList tasks={filteredTasks} selectedCategory={categoryFilter} />
+            <TaskList tasks={filteredTasks} selectedCategory={categoryFilter}/>
 
             {/* Button to open modal for adding a new task */}
             <Button variant="contained" onClick={() => setOpenModal(true)}>
