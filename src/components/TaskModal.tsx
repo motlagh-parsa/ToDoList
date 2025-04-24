@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -16,107 +16,124 @@ import useTasks from "../hooks/useTasks";
 
 // Props for the TaskModal component
 type TaskModalProps = {
-    open: boolean; // Determines if the modal is visible
-    handleClose: () => void; // Callback to close the modal
-    taskToEdit?: Task | null; // Task to edit, or null if it's in "add" mode
+    open: boolean;              // Whether the modal is visible
+    handleClose: () => void;    // Callback to close the modal
+    taskToEdit?: Task | null;   // If present, modal is in edit mode
 };
 
 /**
- * TaskModal - A modal component used to either add a new task or edit an existing one.
- * It handles both the display of the form and form validation for the task title.
+ * TaskModal - A modal for adding or editing tasks.
+ * Handles form state, input validation, and keyboard accessibility (Enter to save).
  */
 const TaskModal: React.FC<TaskModalProps> = ({ open, handleClose, taskToEdit }) => {
-    // Determine if we are in edit mode by checking if a taskToEdit is passed in
-    const isEditMode = !!taskToEdit;
-    const { dispatch } = useTasks();
+    const isEditMode = !!taskToEdit;               // Determine if we're editing or adding
+    const { dispatch } = useTasks();               // Get dispatch from task context
 
-    // State variables to manage form input values and validation
-    const [title, setTitle] = useState("");  // Title of the task (input field)
-    const [category, setCategory] = useState("Personal"); // Task category
-    const [titleError, setTitleError] = useState(false); // Error state for title input
+    const [title, setTitle] = useState("");        // State for task title
+    const [category, setCategory] = useState("Personal"); // State for task category
+    const [titleError, setTitleError] = useState(false);  // Validation state for title input
 
-    // When the modal opens, populate fields with data if editing, or reset for new task
+    const inputRef = useRef<HTMLInputElement>(null);      // Ref to the title input for focusing
+
+    // Populate fields when editing, or reset when adding
     useEffect(() => {
         if (taskToEdit) {
-            setTitle(taskToEdit.title); // Set title for editing
-            setCategory(taskToEdit.category); // Set category for editing
+            setTitle(taskToEdit.title);
+            setCategory(taskToEdit.category);
         } else {
-            setTitle(""); // Clear title for new task
-            setCategory("Personal"); // Set default category for new task
+            setTitle("");
+            setCategory("Personal");
         }
-        setTitleError(false); // Reset the error state when the modal is opened
+        setTitleError(false); // Reset error state on open
     }, [taskToEdit, open]);
 
-    // Handler for saving the task (either adding or editing)
+    // Focus the title input field once the modal is open (after render delay)
+    useEffect(() => {
+        if (open) {
+            setTimeout(() => {
+                inputRef.current?.focus(); // Ensure field is rendered before focusing
+            }, 100);
+        }
+    }, [open]);
+
+    // Save task handler for both add and edit modes
     const handleSave = () => {
         if (!title.trim()) {
-            // If title is empty, show error message
-            setTitleError(true);
-            return; // Prevent saving if title is empty
+            setTitleError(true); // Show error if title is empty
+            return;
         }
 
         if (isEditMode) {
-            // If in edit mode, dispatch the action to edit the task
+            // Update existing task
             dispatch({
                 type: "EDIT_TASK",
                 payload: {
-                    ...taskToEdit, // Keep the original task properties
-                    title, // Update title
-                    category // Update category
+                    ...taskToEdit,
+                    title,
+                    category
                 }
             });
         } else {
-            // If in add mode, dispatch the action to add a new task
+            // Add new task with a unique ID
             dispatch({
                 type: "ADD_TASK",
                 payload: {
-                    id: Date.now().toString(), // Generate a new unique ID
-                    title, // Set the task title
-                    category, // Set the task category
-                    completed: false // New task is initially not completed
+                    id: Date.now().toString(),
+                    title,
+                    category,
+                    completed: false
                 }
             });
         }
 
-        handleClose(); // Close the modal after saving the task
+        handleClose(); // Close modal after saving
+    };
+
+    // Listen for Enter key to trigger save
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            e.preventDefault(); // Prevent default form submission
+            handleSave();       // Trigger save logic
+        }
     };
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
             <DialogTitle>{isEditMode ? "Edit Task" : "Add New Task"}</DialogTitle>
             <DialogContent>
-                {/* Title Input Field */}
+                {/* Task Title Input Field */}
                 <TextField
-                    autoFocus
+                    inputRef={inputRef} // Used to set focus on open
                     fullWidth
                     label="Task Title"
                     value={title}
                     onChange={(e) => {
-                        setTitle(e.target.value); // Update title on change
-                        if (titleError) setTitleError(false); // Clear error if title changes
+                        setTitle(e.target.value);
+                        if (titleError) setTitleError(false); // Clear error on input
                     }}
-                    error={titleError} // Show error if title is invalid
-                    helperText={titleError ? "Title is required" : ""} // Display error message
+                    onKeyDown={handleKeyPress} // Listen for Enter key
+                    error={titleError}
+                    helperText={titleError ? "Title is required" : ""}
                     sx={{ mt: 1, mb: 2 }}
-                    required // Title field is required
+                    required
                 />
-                {/* Category Selection Field */}
+
+                {/* Task Category Selector */}
                 <FormControl fullWidth>
                     <InputLabel>Category</InputLabel>
                     <Select
                         value={category}
                         label="Category"
-                        onChange={(e) => setCategory(e.target.value)} // Update category on change
+                        onChange={(e) => setCategory(e.target.value)}
                     >
                         <MenuItem value="Personal">Personal</MenuItem>
                         <MenuItem value="Work">Work</MenuItem>
                     </Select>
                 </FormControl>
             </DialogContent>
+
             <DialogActions>
-                {/* Cancel Button */}
                 <Button onClick={handleClose}>Cancel</Button>
-                {/* Save Button */}
                 <Button onClick={handleSave} variant="contained">
                     {isEditMode ? "Save Changes" : "Add Task"}
                 </Button>
